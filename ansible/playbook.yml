@@ -1,0 +1,49 @@
+- name: Prepare server for KP2
+  hosts: servers
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name:
+          - docker.io
+          - python3-docker
+          - curl
+        state: present
+
+    - name: Ensure docker service started
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add ubuntu user to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
+    - name: Create Jenkins home directory
+      file:
+        path: /opt/jenkins_home
+        state: directory
+        owner: "1000"
+        group: "1000"
+        mode: '0755'
+
+    - name: Run Jenkins container
+      docker_container:
+        name: jenkins
+        image: jenkins/jenkins:lts
+        state: started
+        restart_policy: always
+        published_ports:
+          - "8080:8080"
+        volumes:
+          - /opt/jenkins_home:/var/jenkins_home
+          - /var/run/docker.sock:/var/run/docker.sock
