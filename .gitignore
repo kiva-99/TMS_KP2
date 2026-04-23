@@ -11,6 +11,12 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+terraform/.terraform.lock.hcl
+
 # Sensitive vars
 *.tfvars
 *.auto.tfvars
