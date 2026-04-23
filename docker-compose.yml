@@ -1,0 +1,26 @@
+services:
+  app1:
+    build: .
+    container_name: quote-generator-1
+    restart: always
+    expose:
+      - "5000"
+
+  app2:
+    build: .
+    container_name: quote-generator-2
+    restart: always
+    expose:
+      - "5000"
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: quote-nginx
+    restart: always
+    depends_on:
+      - app1
+      - app2
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
