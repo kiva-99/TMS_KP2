@@ -26,7 +26,7 @@ pipeline {
                     docker rm -f $TEST_CONTAINER || true
                     docker run -d --name $TEST_CONTAINER -p 5001:5000 $IMAGE_NAME
                     sleep 5
-                    curl --fail http://localhost:5001/health
+                    docker exec $TEST_CONTAINER python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:5000/health').read().decode())"
                     docker rm -f $TEST_CONTAINER
                 '''
             }
@@ -38,7 +38,7 @@ pipeline {
                     docker rm -f $PROD_CONTAINER || true
                     docker run -d --name $PROD_CONTAINER --restart always -p 5000:5000 $IMAGE_NAME
                     sleep 5
-                    curl --fail http://localhost:5000/health
+                    docker exec $PROD_CONTAINER python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:5000/health').read().decode())"
                 '''
             }
         }

@@ -1,21 +1,26 @@
-from flask import Flask
+from flask import Flask, jsonify
 import random
 
 app = Flask(__name__)
 
-quotes = [
-    "DevOps is a culture",
-    "Automation is key",
-    "You build it, you run it"
+QUOTES = [
+    "DevOps is a journey, not a destination.",
+    "Automate everything you can.",
+    "Infrastructure as code changes everything.",
+    "Small frequent changes beat big risky releases."
 ]
 
 @app.route("/")
-def home():
-    return {"quote": random.choice(quotes)}
+def index():
+    return jsonify({
+        "quote": random.choice(QUOTES)
+    })
 
 @app.route("/health")
 def health():
-    return {"status": "ok"}
+    return jsonify({
+        "status": "ok"
+    }), 200
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
